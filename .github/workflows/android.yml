@@ -18,8 +18,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Setup Android SDK manually
-        run</longcat_arg_key>
-<longcat_arg_value>
+        run: |
           export ANDROID_HOME=$HOME/android-sdk
           mkdir -p $ANDROID_HOME/cmdline-tools
           cd $ANDROID_HOME/cmdline-tools
