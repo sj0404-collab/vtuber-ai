@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#1a1a2e">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Настройки"
+        android:textColor="#ffffff"
+        android:textSize="24sp"
+        android:layout_marginBottom="24dp" />
+
+    <EditText
+        android:id="@+id/et_api_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="API ключ"
+        android:textColor="#ffffff"
+        android:textColorHint="#888888"
+        android:inputType="textPassword"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/et_model_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="URL модели"
+        android:textColor="#ffffff"
+        android:textColorHint="#888888"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Сохранить"
+        android:textColor="#ffffff"
+        android:backgroundTint="#4a6fa5" />
+
+</LinearLayout>

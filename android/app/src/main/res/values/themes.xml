@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.VtuberAI" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#4a6fa5</item>
+        <item name="colorPrimaryDark">#3a5a8a</item>
+        <item name="colorAccent">#64c8ff</item>
+        <item name="android:windowBackground">#1a1a2e</item>
+    </style>
+</resources>
