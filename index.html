@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vtuber AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <div id="avatar-container">
+            <canvas id="avatar-canvas"></canvas>
+            <div id="emotion-indicator"></div>
+        </div>
+
+        <div id="controls">
+            <button id="btn-talk" class="control-btn">
+                <span class="icon">🎤</span>
+                <span class="label">Сказать</span>
+            </button>
+            <button id="btn-vision" class="control-btn">
+                <span class="icon">👁</span>
+                <span class="label">Приватный режим</span>
+            </button>
+            <button id="btn-thinking" class="control-btn">
+                <span class="icon">💭</span>
+                <span class="label">Размышления</span>
+            </button>
+        </div>
+
+        <div id="thinking-panel" class="hidden">
+            <div class="panel-header">
+                <h3>Размышления и ответы</h3>
+                <button id="btn-close-thinking">✕</button>
+            </div>
+            <div id="thinking-content"></div>
+        </div>
+
+        <div id="chat-panel" class="hidden">
+            <div class="panel-header">
+                <h3>Голосовой чат</h3>
+                <button id="btn-close-chat">✕</button>
+            </div>
+            <div id="chat-messages"></div>
+            <div id="chat-status">Нажмите "Сказать" для начала</div>
+        </div>
+
+        <div id="settings-panel" class="hidden">
+            <div class="panel-header">
+                <h3>Настройки</h3>
+                <button id="btn-close-settings">✕</button>
+            </div>
+            <div class="settings-content">
+                <label>
+                    API ключ MiMo:
+                    <input type="password" id="api-key" placeholder="Введите API ключ">
+                </label>
+                <label>
+                    URL MiMo API:
+                    <input type="text" id="api-url" placeholder="https://api.example.com/v1">
+                </label>
+                <label>
+                    TTS:
+                    <select id="tts-select">
+                        <option value="edge">Edge TTS (онлайн)</option>
+                        <option value="local">Локальный TTS</option>
+                    </select>
+                </label>
+                <label>
+                    Роль персонажа:
+                    <textarea id="character-role" placeholder="Опишите роль и характер..."></textarea>
+                </label>
+                <button id="btn-save-settings">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
