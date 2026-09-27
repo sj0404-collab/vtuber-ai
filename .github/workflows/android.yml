@@ -31,13 +31,11 @@ jobs:
           echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
           echo "PATH=$PATH" >> $GITHUB_ENV
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-
       - name: Build APK
         run: |
           cd android
-          gradle assembleRelease --no-daemon
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon
 
       - name: Upload APK to Release
         uses: softprops/action-gh-release@v1
