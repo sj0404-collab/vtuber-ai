@@ -20,10 +20,18 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Accept licenses and install SDK components
+        run: |
+          yes | sdkmanager --licenses || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
       - name: Build APK
         run: |
           cd android
-          gradle assembleRelease
+          gradle assembleRelease --no-daemon
 
       - name: Upload APK to Release
         uses: softprops/action-gh-release@v1
