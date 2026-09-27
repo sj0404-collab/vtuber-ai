@@ -12,7 +12,7 @@ class VtuberAI {
 
         this.settings = {
             apiKey: '',
-            apiUrl: 'https://api.mimo.ai/v1',
+            apiUrl: 'https://api.perplexity.ai',
             tts: 'edge',
             characterRole: 'Ты дружелюбный AI-компаньон с мягким характером. Ты помогаешь и поддерживаешь.'
         };
@@ -275,7 +275,7 @@ class VtuberAI {
                 'Authorization': `Bearer ${this.settings.apiKey}`
             },
             body: JSON.stringify({
-                model: 'mimo-free',
+                model: 'llama-3.1-sonar-small-128k-online',
                 messages: messages,
                 temperature: 0.7,
                 max_tokens: 500
