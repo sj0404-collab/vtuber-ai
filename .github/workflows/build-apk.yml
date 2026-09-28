@@ -1,0 +1,50 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Assemble debug + release APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Assemble in Docker (ghcr.io/cirruslabs/android-sdk:34)
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE":/workspace \
+            -v gradle-cache:/root/.gradle \
+            -e GRADLE_USER_HOME=/root/.gradle \
+            -e ANDROID_HOME=/opt/android-sdk \
+            ghcr.io/cirruslabs/android-sdk:34 \
+            bash -c 'cd /workspace/android && chmod +x gradlew && ./gradlew --no-daemon --stacktrace assembleDebug assembleRelease'
+
+      - name: Collect APKs
+        if: always()
+        run: |
+          mkdir -p "$RUNNER_TEMP/apk-out"
+          find android/app/build/outputs/apk -name '*.apk' -exec cp {} "$RUNNER_TEMP/apk-out/" \; || true
+          ls -la "$RUNNER_TEMP/apk-out"
+
+      - name: Upload APK artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vtuber-ai-apks
+          path: |
+            android/app/build/outputs/apk/**/*.apk
+          if-no-files-found: warn
+          retention-days: 30

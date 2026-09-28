@@ -1,45 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:background="#1a1a2e">
+    android:background="#1a1a2e"
+    android:fillViewport="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Настройки"
-        android:textColor="#ffffff"
-        android:textSize="24sp"
-        android:layout_marginBottom="24dp" />
-
-    <EditText
-        android:id="@+id/et_api_key"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="API ключ"
-        android:textColor="#ffffff"
-        android:textColorHint="#888888"
-        android:inputType="textPassword"
-        android:layout_marginBottom="16dp" />
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <EditText
-        android:id="@+id/et_model_url"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="URL модели"
-        android:textColor="#ffffff"
-        android:textColorHint="#888888"
-        android:layout_marginBottom="24dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Настройки"
+            android:textColor="#ff5fd0"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/btn_save"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="Сохранить"
-        android:textColor="#ffffff"
-        android:backgroundTint="#4a6fa5" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Модель-аватар (Live2D)"
+            android:textColor="#c9c2e8"
+            android:textSize="13sp" />
 
-</LinearLayout>
+        <Spinner
+            android:id="@+id/sp_avatar"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="18dp"
+            android:backgroundTint="#4a6fa5" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Размер аватара"
+            android:textColor="#c9c2e8"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Размер аватара: 100%"
+            android:textColor="#ffffff"
+            android:textSize="14sp" />
+
+        <SeekBar
+            android:id="@+id/sb_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp" />
+
+        <EditText
+            android:id="@+id/et_api_key"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="API ключ"
+            android:importantForAutofill="no"
+            android:inputType="textPassword"
+            android:layout_marginBottom="12dp"
+            android:textColor="#ffffff"
+            android:textColorHint="#8888aa" />
+
+        <EditText
+            android:id="@+id/et_model_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="URL модели (OpenAI-совместимый)"
+            android:inputType="textUri"
+            android:layout_marginBottom="12dp"
+            android:textColor="#ffffff"
+            android:textColorHint="#8888aa" />
+
+        <EditText
+            android:id="@+id/et_model_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Имя модели"
+            android:inputType="text"
+            android:layout_marginBottom="12dp"
+            android:textColor="#ffffff"
+            android:textColorHint="#8888aa" />
+
+        <EditText
+            android:id="@+id/et_role"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|start"
+            android:hint="Роль и характер персонажа"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:layout_marginBottom="16dp"
+            android:textColor="#ffffff"
+            android:textColorHint="#8888aa" />
+
+        <Switch
+            android:id="@+id/sw_speech"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:text="Озвучивать ответы"
+            android:textColor="#ffffff" />
+
+        <Button
+            android:id="@+id/btn_test_voice"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#3a5a8a"
+            android:text="Проверить голос"
+            android:textColor="#ffffff" />
+
+        <Button
+            android:id="@+id/btn_clear_history"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#3a5a8a"
+            android:text="Очистить историю"
+            android:textColor="#ffffff" />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:backgroundTint="#4a6fa5"
+            android:text="Сохранить"
+            android:textColor="#ffffff" />
+    </LinearLayout>
+</ScrollView>
