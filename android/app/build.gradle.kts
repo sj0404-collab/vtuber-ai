@@ -1,3 +1,4 @@
+import java.util.Properties
 import java.net.URL
 
 plugins {
@@ -65,6 +66,13 @@ android {
     }
 
     val storeFilePath = providers.environmentVariable("KEYSTORE_PATH").orNull
+    // Локальный store из репо (как у snapboost): постоянная подпись, если env не заданы
+    val localPropsFile = rootProject.file("keystore.properties")
+    val localProps = Properties().apply {
+        if (localPropsFile.exists()) localPropsFile.inputStream().use { load(it) }
+    }
+    val hasLocalKeystore = localProps.getProperty("storeFile")
+        ?.let { rootProject.file(it).exists() } == true
     signingConfigs {
         create("release") {
             if (storeFilePath != null) {
@@ -72,6 +80,12 @@ android {
                 storePassword = providers.environmentVariable("KEYSTORE_PASSWORD").orNull
                 keyAlias = providers.environmentVariable("KEY_ALIAS").orNull
                 keyPassword = providers.environmentVariable("KEY_PASSWORD").orNull
+            }
+            else if (hasLocalKeystore) {
+                storeFile = rootProject.file(localProps.getProperty("storeFile"))
+                storePassword = localProps.getProperty("storePassword")
+                keyAlias = localProps.getProperty("keyAlias")
+                keyPassword = localProps.getProperty("keyPassword")
             }
         }
     }
@@ -83,7 +97,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            if (storeFilePath != null) {
+            if (storeFilePath != null || hasLocalKeystore) {
                 signingConfig = signingConfigs.getByName("release")
             }
         }
