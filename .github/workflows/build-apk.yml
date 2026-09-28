@@ -28,7 +28,6 @@ jobs:
             -v "$GITHUB_WORKSPACE":/workspace \
             -v gradle-cache:/root/.gradle \
             -e GRADLE_USER_HOME=/root/.gradle \
-            -e ANDROID_HOME=/opt/android-sdk \
             ghcr.io/cirruslabs/android-sdk:34 \
             bash -c 'cd /workspace/android && chmod +x gradlew && ./gradlew --no-daemon --stacktrace assembleDebug assembleRelease'
 

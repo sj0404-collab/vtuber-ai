@@ -108,7 +108,7 @@ class AvatarWebView @JvmOverloads constructor(
 
     fun tilt(degrees: Float) = call("tilt", degrees.toString())
 
-    fun pulse() = call("pulse()")
+    fun pulse() = call("pulse", "")
 
     fun dim(value: Float) = call("dim", value.toString())
 
