@@ -1,0 +1,97 @@
+name: Release
+
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Тег релиза, например v3.1.0'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Signed release APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Определить версию по тегу
+        id: ver
+        env:
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: |
+          VERSION="${TAG#v}"
+          MAX_CODE=$(gh api "repos/${GITHUB_REPOSITORY}/releases?per_page=100" \
+            --jq '[.[] | .tag_name | ltrimstr("v") | select(test("^[0-9]+\\.[0-9]+\\.[0-9]+$"))
+                   | split(".") | ((.[0]|tonumber)*10000 + (.[1]|tonumber)*100 + (.[2]|tonumber))] | max // 0')
+          if [[ "$VERSION" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            TAG_CODE=$(( BASH_REMATCH[1] * 10000 + BASH_REMATCH[2] * 100 + BASH_REMATCH[3] ))
+            CODE=$(( TAG_CODE > MAX_CODE ? TAG_CODE : MAX_CODE + 1 ))
+          else
+            CODE=$(( MAX_CODE + 1 ))
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version_name=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "version_code=$CODE" >> "$GITHUB_OUTPUT"
+          echo "Тег $TAG -> versionName $VERSION, versionCode $CODE"
+
+      - name: Восстановить keystore из секрета
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          printf '%s' "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/vtuber-release.jks"
+          test -s "$RUNNER_TEMP/vtuber-release.jks"
+
+      - name: Собрать подписанный APK в Docker
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          VERSION_NAME: ${{ steps.ver.outputs.version_name }}
+          VERSION_CODE: ${{ steps.ver.outputs.version_code }}
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE":/workspace \
+            -v "$RUNNER_TEMP/vtuber-release.jks":/workspace/keystore/vtuber-release.jks:ro \
+            -v gradle-cache:/root/.gradle \
+            -e GRADLE_USER_HOME=/root/.gradle \
+            -e KEYSTORE_PATH=/workspace/keystore/vtuber-release.jks \
+            -e KEYSTORE_PASSWORD \
+            -e KEY_ALIAS \
+            -e KEY_PASSWORD \
+            -e VERSION_NAME \
+            -e VERSION_CODE \
+            ghcr.io/cirruslabs/android-sdk:34 \
+            bash -c 'cd /workspace/android && ./gradlew --no-daemon --stacktrace assembleRelease \
+              -PvtuberVersionName="$VERSION_NAME" -PvtuberVersionCode="$VERSION_CODE"'
+
+      - name: Проверить подпись
+        run: |
+          APK=$(find android/app/build/outputs/apk/release -name '*.apk' | head -1)
+          test -n "$APK"
+          docker run --rm -v "$GITHUB_WORKSPACE":/workspace ghcr.io/cirruslabs/android-sdk:34 bash -c '
+            BT=$ANDROID_HOME/build-tools/34.0.0
+            $BT/apksigner verify --print-certs "$1" | head -4
+            $BT/aapt dump badging "$1" | head -1' _ "$APK"
+
+      - name: Опубликовать релиз на GitHub
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.ver.outputs.tag }}
+          VERSION_NAME: ${{ steps.ver.outputs.version_name }}
+        run: |
+          APK=$(find android/app/build/outputs/apk/release -name '*.apk' | head -1)
+          cp "$APK" "$RUNNER_TEMP/vtuber-ai-$VERSION_NAME.apk"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$RUNNER_TEMP/vtuber-ai-$VERSION_NAME.apk" --clobber
+          else
+            gh release create "$TAG" "$RUNNER_TEMP/vtuber-ai-$VERSION_NAME.apk" \
+              --title "Vtuber AI $VERSION_NAME" \
+              --generate-notes
+          fi
+          gh release view "$TAG" --json tagName,assets -q '{tag: .tagName, assets: [.assets[].name]}'

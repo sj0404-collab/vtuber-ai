@@ -69,6 +69,10 @@ class SettingsActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btn_save).setOnClickListener { save() }
         findViewById<Button>(R.id.btn_test_voice).setOnClickListener { testVoice() }
+        findViewById<Button>(R.id.btn_check_update).setOnClickListener {
+            UpdatePrompt(this).check(silent = false)
+        }
+        findViewById<TextView>(R.id.tv_version).text = "Версия: ${Updater(this).currentVersion()}"
         findViewById<Button>(R.id.btn_clear_history).setOnClickListener {
             prefs.clearHistory()
             Toast.makeText(this, "История очищена", Toast.LENGTH_SHORT).show()

@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var status: TextView
     private lateinit var btnOverlay: Button
     private lateinit var btnSettings: Button
+    private lateinit var updatePrompt: UpdatePrompt
 
     private val overlayPermission = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         refreshState()
@@ -49,6 +50,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
         findViewById<Button>(R.id.btn_hide).setOnClickListener { hideOverlay() }
+        updatePrompt = UpdatePrompt(this)
+        updatePrompt.check(silent = true)
     }
 
     override fun onResume() {
@@ -100,7 +103,8 @@ class MainActivity : AppCompatActivity() {
             append("Аватар: ").append(avatar).append('\n')
             append("Модели в комплекте: ").append(models.joinToString(", ").ifEmpty { "—" }).append('\n')
             append("Голос: ").append(if (hasAudioPermission()) "микрофон доступен" else "нужно разрешение").append('\n')
-            append(if (overlay) "Оверле разрешён" else "Оверле ещё не разрешён")
+            append(if (overlay) "Оверле разрешён" else "Оверле ещё не разрешён").append('\n')
+            append("Версия: ").append(Updater(this@MainActivity).currentVersion())
         }
         btnOverlay.text = if (overlay) "Показать аватар" else "Разрешить и показать"
     }

@@ -125,6 +125,24 @@
             android:textColor="#ffffff" />
 
         <Button
+            android:id="@+id/btn_check_update"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#3a5a8a"
+            android:text="Проверить обновления"
+            android:textColor="#ffffff" />
+
+        <TextView
+            android:id="@+id/tv_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Версия —"
+            android:textColor="#8888aa"
+            android:textSize="12sp" />
+
+        <Button
             android:id="@+id/btn_save"
             android:layout_width="match_parent"
             android:layout_height="58dp"

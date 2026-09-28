@@ -60,8 +60,20 @@ android {
         applicationId = "com.vtuber.ai"
         minSdk = 24
         targetSdk = 34
-        versionCode = 3
-        versionName = "3.0.0"
+        versionCode = (project.findProperty("vtuberVersionCode") as String?)?.toInt() ?: 3
+        versionName = (project.findProperty("vtuberVersionName") as String?) ?: "3.0.0"
+    }
+
+    val storeFilePath = providers.environmentVariable("KEYSTORE_PATH").orNull
+    signingConfigs {
+        create("release") {
+            if (storeFilePath != null) {
+                storeFile = file(storeFilePath)
+                storePassword = providers.environmentVariable("KEYSTORE_PASSWORD").orNull
+                keyAlias = providers.environmentVariable("KEY_ALIAS").orNull
+                keyPassword = providers.environmentVariable("KEY_PASSWORD").orNull
+            }
+        }
     }
 
     buildTypes {
@@ -71,6 +83,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            if (storeFilePath != null) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
     compileOptions {
